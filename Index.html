@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Staff Engineer Interview Mastery Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap');
+
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --accent: #c8391a;
+    --accent2: #1a4fc8;
+    --accent3: #1a8c4a;
+    --gold: #c9a227;
+    --muted: #6b6560;
+    --rule: #c8b89a;
+    --card-bg: #fffcf5;
+    --code-bg: #1a1a2e;
+    --code-txt: #e0e0e0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(200,57,26,0.06) 40px,
+      rgba(200,57,26,0.06) 41px
+    );
+  }
+  .masthead .kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .masthead h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    letter-spacing: 0.04em;
+    line-height: 0.95;
+    position: relative;
+    margin-bottom: 1.2rem;
+  }
+  .masthead h1 span { color: var(--accent); }
+  .masthead .subtitle {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: rgba(245,240,232,0.7);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    position: relative;
+  }
+  .meta-row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .meta-badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ── LAYOUT ── */
+  .page-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* ── TOC ── */
+  .toc-section {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2.5rem 2rem;
+    border-bottom: 3px solid var(--accent);
+  }
+  .toc-section .page-grid { display: flex; gap: 3rem; flex-wrap: wrap; }
+  .toc-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    min-width: 140px;
+    padding-top: 0.2rem;
+  }
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    flex: 1;
+  }
+  .toc-list li a {
+    color: var(--paper);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-family: 'DM Mono', monospace;
+    opacity: 0.8;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .toc-list li a:hover { opacity: 1; color: var(--gold); }
+  .toc-list li::before { content: '→ '; color: var(--accent); font-size: 0.7rem; }
+
+  /* ── MAIN SECTIONS ── */
+  .section {
+    padding: 3.5rem 0 2.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 3px solid var(--accent);
+    display: inline-block;
+  }
+
+  /* ── COMPANY TABLE ── */
+  .company-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .company-card {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--accent);
+    padding: 1rem 1.2rem;
+    border-radius: 1px;
+  }
+  .company-card.tier-2 { border-left-color: var(--accent2); }
+  .company-card.tier-3 { border-left-color: var(--accent3); }
+  .company-card h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+  }
+  .company-card p {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .tier-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    margin-bottom: 0.5rem;
+    background: var(--accent);
+    color: white;
+  }
+  .tier-tag.t2 { background: var(--accent2); }
+  .tier-tag.t3 { background: var(--accent3); }
+
+  /* ── LOOP TABLE ── */
+  .loop-table-wrapper { overflow-x: auto; margin-top: 1.5rem; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+  }
+  thead tr {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  th { padding: 0.75rem 1rem; text-align: left; }
+  td { padding: 0.65rem 1rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:nth-child(even) td { background: rgba(0,0,0,0.025); }
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 2px;
+    margin: 0.1rem;
+    white-space: nowrap;
+  }
+  .badge-red { background: #fde8e3; color: #a82c11; border: 1px solid #f5bdb0; }
+  .badge-blue { background: #e3eafd; color: #1a4fc8; border: 1px solid #b0c2f5; }
+  .badge-green { background: #e3fded; color: #1a6c3a; border: 1px solid #b0f5c8; }
+  .badge-gold { background: #fdf5e3; color: #8c6e12; border: 1px solid #f5dbb0; }
+  .badge-purple { background: #f0e3fd; color: #6c1a8c; border: 1px solid #d9b0f5; }
+
+  /* ── QUESTION BLOCKS ── */
+  .q-category {
+    margin-top: 2rem;
+  }
+  .q-category-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .q-category-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.06em;
+  }
+  .q-category-header .q-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+  .q-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.8rem;
+  }
+  .q-card {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    padding: 0.9rem 1.1rem;
+    border-radius: 1px;
+    position: relative;
+  }
+  .q-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+  }
+  .q-card.design::before { background: var(--accent2); }
+  .q-card.leadership::before { background: var(--accent3); }
+  .q-card .q-text { font-size: 0.85rem; line-height: 1.5; }
+  .q-card .q-meta {
+    margin-top: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+  }
+  .q-card .q-level {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.4rem;
+    border-radius: 2px;
+    margin-bottom: 0.4rem;
+    display: inline-block;
+  }
+  .lvl-hard { background: #fde8e3; color: #a82c11; }
+  .lvl-design { background: #e3eafd; color: #1a4fc8; }
+  .lvl-behav { background: #e3fded; color: #1a6c3a; }
+
+  /* ── RESOURCE CARDS ── */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .resource-card {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    padding: 1.2rem;
+    border-radius: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .resource-card .r-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .resource-card h4 {
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+  .resource-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+  .resource-card a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent2);
+    text-decoration: none;
+    margin-top: auto;
+    word-break: break-all;
+  }
+  .resource-card a:hover { text-decoration: underline; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.5rem 2rem;
+    border-left: 5px solid var(--accent);
+    margin: 2rem 0;
+    border-radius: 0 2px 2px 0;
+  }
+  .callout .callout-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+  .callout p { font-size: 0.85rem; opacity: 0.9; line-height: 1.6; }
+  .callout.blue { border-left-color: var(--accent2); }
+  .callout.green { border-left-color: var(--accent3); }
+
+  /* ── WEIGHT BARS ── */
+  .weight-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0.6rem 0;
+  }
+  .weight-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    min-width: 130px;
+    color: var(--muted);
+  }
+  .weight-bar-track {
+    flex: 1;
+    height: 12px;
+    background: rgba(0,0,0,0.07);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .weight-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+  .weight-bar-fill.blue { background: var(--accent2); }
+  .weight-bar-fill.green { background: var(--accent3); }
+  .weight-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    min-width: 35px;
+    text-align: right;
+    font-weight: 500;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: var(--muted);
+    text-align: center;
+    padding: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    margin-top: 2rem;
+  }
+  footer strong { color: var(--paper); }
+
+  /* ── PILL LIST ── */
+  .pill-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+  .pill {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    padding: 0.3rem 0.8rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    border-radius: 2px;
+  }
+  .pill.hot { border-color: var(--accent); color: var(--accent); }
+  .pill.cool { border-color: var(--accent2); color: var(--accent2); }
+
+  /* ── STEP LIST ── */
+  .step-list { counter-reset: step; list-style: none; margin-top: 1rem; }
+  .step-list li {
+    counter-increment: step;
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: flex-start;
+  }
+  .step-list li::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--accent);
+    min-width: 2.5rem;
+    line-height: 1;
+    padding-top: 0.1rem;
+  }
+  .step-list li .step-text { font-size: 0.88rem; line-height: 1.6; }
+  .step-list li strong { font-weight: 600; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .masthead { padding: 2.5rem 1.2rem 2rem; }
+    .section { padding: 2.5rem 0 2rem; }
+    .toc-section .page-grid { flex-direction: column; gap: 1rem; }
+  }
+
+  /* Anchor offset for sticky-free layout */
+  [id] { scroll-margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="kicker">Comprehensive Prep Intelligence Report · 2024–2026</div>
+  <h1>Staff Engineer<br><span>Interview</span> Mastery</h1>
+  <p class="subtitle">A field guide to cracking L6/L7 loops at the Magnificent 7, Intuit competitors, and beyond — with DS/Algo, System Design &amp; Leadership playbooks.</p>
+  <div class="meta-row">
+    <div class="meta-badge">11 Target Companies</div>
+    <div class="meta-badge">60+ DS/Algo Questions</div>
+    <div class="meta-badge">40+ System Design Prompts</div>
+    <div class="meta-badge">30+ Behavioral Questions</div>
+    <div class="meta-badge">Bengaluru + Global Hubs</div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc-section">
+  <div class="page-grid">
+    <h2>Contents</h2>
+    <ul class="toc-list">
+      <li><a href="#target-companies">Target Companies</a></li>
+      <li><a href="#loop-structures">Interview Loop Structures</a></li>
+      <li><a href="#competency-weights">Competency Weights</a></li>
+      <li><a href="#bengaluru">Bengaluru / India Hub Notes</a></li>
+      <li><a href="#dsalgo">DS &amp; Algo Questions</a></li>
+      <li><a href="#systemdesign">System Design / HLD</a></li>
+      <li><a href="#leadership">Leadership &amp; Behavioral</a></li>
+      <li><a href="#prep-plan">Preparation Plan</a></li>
+      <li><a href="#resources">Resources &amp; Communities</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="page-grid">
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 1: TARGET COMPANIES
+════════════════════════════════════════════════════ -->
+<section class="section" id="target-companies">
+  <div class="section-label">Section 01</div>
+  <div class="section-title">Target Companies</div>
+  <p>The target list is divided into three tiers based on interview rigor, brand recognition in India, and strategic relevance to Intuit hiring pipelines.</p>
+
+  <div class="company-grid">
+    <div class="company-card">
+      <div class="tier-tag">Tier 1 · Mag 7</div>
+      <h4>Google / Alphabet</h4>
+      <p>L6 = Staff. L7 = Senior Staff. Highest coding bar; heavy system design depth required. Bengaluru office is a key engineering hub.</p>
+    </div>
+    <div class="company-card">
+      <div class="tier-tag">Tier 1 · Mag 7</div>
+      <h4>Meta (Facebook)</h4>
+      <p>E6 = Staff. Dual system design rounds mandatory. AI-assisted coding round now rolling out. Hyderabad + Remote India hub.</p>
+    </div>
+    <div class="company-card">
+      <div class="tier-tag">Tier 1 · Mag 7</div>
+      <h4>Amazon / AWS</h4>
+      <p>L6 = SDE III (Senior), L7 = Principal. Leadership Principles are pervasive — every round includes LP questions. Bengaluru is a primary India hub.</p>
+    </div>
+    <div class="company-card">
+      <div class="tier-tag">Tier 1 · Mag 7</div>
+      <h4>Microsoft</h4>
+      <p>L63 = Senior, L65 = Principal. Strategy round added at L65. Microsoft's Hyderabad campus is one of largest outside Redmond.</p>
+    </div>
+    <div class="company-card">
+      <div class="tier-tag">Tier 1 · Mag 7</div>
+      <h4>Apple</h4>
+      <p>ICT5/ICT6 = Senior/Staff. Known for highly domain-specific rounds and lower public data. India engineering roles growing rapidly.</p>
+    </div>
+    <div class="company-card">
+      <div class="tier-tag">Tier 1 · Mag 7</div>
+      <h4>Nvidia</h4>
+      <p>Strong focus on systems programming, GPU architecture, CUDA. Bengaluru office is key for hardware-adjacent SWE roles. Surge in AI infra hiring.</p>
+    </div>
+    <div class="company-card">
+      <div class="tier-tag">Tier 1 · Mag 7</div>
+      <h4>Tesla</h4>
+      <p>Embedded/systems-heavy. Less structured interview pipeline than FAANG. Growing India presence; primarily for data + autonomy roles.</p>
+    </div>
+    <div class="company-card tier-2">
+      <div class="tier-tag t2">Tier 2 · Key Intuit Competitor</div>
+      <h4>Salesforce</h4>
+      <p>SMTS = Senior, LMTS = Staff. Emphasis on Ohana values + multi-tenant SaaS architecture. Hyderabad and Bengaluru offices.</p>
+    </div>
+    <div class="company-card tier-2">
+      <div class="tier-tag t2">Tier 2 · Key Intuit Competitor</div>
+      <h4>PayPal</h4>
+      <p>Staff SWE ≈ L6 analog. Fintech domain expertise valued. Bengaluru engineering center is active. Strong LP-style behavioral rounds.</p>
+    </div>
+    <div class="company-card tier-2">
+      <div class="tier-tag t2">Tier 2 · Key Intuit Competitor</div>
+      <h4>Adobe</h4>
+      <p>Staff SWE role. Domain-specific questions around Creative Cloud, Experience Cloud. Noida/Bengaluru offices. Strong system design bar.</p>
+    </div>
+    <div class="company-card tier-3">
+      <div class="tier-tag t3">Tier 3 · Growth Companies</div>
+      <h4>Uber / Airbnb</h4>
+      <p>Staff Engineer. Uber emphasizes real-time distributed systems; Airbnb emphasizes platform + marketplace design. Both active in India remotely.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 2: INTERVIEW LOOP STRUCTURES
+════════════════════════════════════════════════════ -->
+<section class="section" id="loop-structures">
+  <div class="section-label">Section 02</div>
+  <div class="section-title">Interview Loop Structures</div>
+  <p>Based on 2024–2026 candidate reports from Blind, Glassdoor, interviewing.io, and onsites.fyi. Structures are for Staff-equivalent IC roles (L6/L7).</p>
+
+  <div class="loop-table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Equivalent Level</th>
+          <th>Total Rounds</th>
+          <th>Round Breakdown</th>
+          <th>Key Differentiators</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Google</strong></td>
+          <td>L6 Staff</td>
+          <td>5–6 rounds</td>
+          <td>
+            <span class="badge badge-red">2 × Coding</span>
+            <span class="badge badge-blue">2 × System Design</span>
+            <span class="badge badge-green">1 × Behavioral (Googleyness)</span>
+            <span class="badge badge-gold">1 × Role-Related Knowledge (RRK)</span>
+          </td>
+          <td>RRK round for backend/fullstack roles is unique to senior levels. GHA assessment pre-loop. Coding often Medium; design is deep &amp; ambiguous. L7 loop adds project retrospective round.</td>
+        </tr>
+        <tr>
+          <td><strong>Meta</strong></td>
+          <td>E6 Staff</td>
+          <td>5–6 rounds</td>
+          <td>
+            <span class="badge badge-red">1 × Coding (Standard)</span>
+            <span class="badge badge-red">1 × AI-Assisted Coding (pilot, 2025)</span>
+            <span class="badge badge-blue">1 × System Architecture (HLD)</span>
+            <span class="badge badge-blue">1 × Product Design (LLD)</span>
+            <span class="badge badge-green">1 × Behavioral</span>
+            <span class="badge badge-gold">1 × Leadership Assessment (pre-onsite)</span>
+          </td>
+          <td>Both system design rounds are mandatory passes for E6. AI-assisted coding round fully rolling out 2026. Team matching phase adds another informal bar. Fail behavioral = instant reject, no mulligan.</td>
+        </tr>
+        <tr>
+          <td><strong>Amazon</strong></td>
+          <td>L6 SDE III / L7 PE</td>
+          <td>6–7 rounds (L6) / 5–6 (L7)</td>
+          <td>
+            <span class="badge badge-red">2 × Coding (L6) / 1–2 (L7)</span>
+            <span class="badge badge-blue">2 × System Design</span>
+            <span class="badge badge-green">3–4 × LP Behavioral</span>
+            <span class="badge badge-purple">1 × Bar Raiser</span>
+            <span class="badge badge-gold">1 × Writing Assignment (L7 only)</span>
+          </td>
+          <td>LP questions bleed into every round — prepare for them everywhere. Bar Raiser is an independent evaluator, can veto hire. L7 includes a narrative writing assignment (2-pager) and is LP-dominant (~60%). Earn Trust is key LP at L7.</td>
+        </tr>
+        <tr>
+          <td><strong>Microsoft</strong></td>
+          <td>L63 Senior / L65 Principal</td>
+          <td>4–5 rounds</td>
+          <td>
+            <span class="badge badge-red">1–2 × Coding</span>
+            <span class="badge badge-blue">1–2 × System Design</span>
+            <span class="badge badge-green">1 × Behavioral</span>
+            <span class="badge badge-gold">1 × Technical Strategy (L65 only)</span>
+          </td>
+          <td>Technical Strategy round at L65 assesses cross-team influence and org-level decisions. Uses Growth Mindset / Create Clarity / Generate Energy rubric. Bar Raiser equivalent present. Prep split: 50% DSA, 30% Design, 20% Behavioral.</td>
+        </tr>
+        <tr>
+          <td><strong>Apple</strong></td>
+          <td>ICT5/ICT6</td>
+          <td>4–6 rounds</td>
+          <td>
+            <span class="badge badge-red">2 × Coding</span>
+            <span class="badge badge-blue">1–2 × System/Domain Design</span>
+            <span class="badge badge-green">1 × Behavioral</span>
+          </td>
+          <td>Highly domain-specific. Expect questions tied to Apple's actual product stack (e.g., iOS internals, Swift, CloudKit). Less public data; interview style is collaborative rather than adversarial. Loop tailored by team.</td>
+        </tr>
+        <tr>
+          <td><strong>Nvidia</strong></td>
+          <td>Senior/Staff IC</td>
+          <td>4–5 rounds</td>
+          <td>
+            <span class="badge badge-red">2 × Coding (Systems-heavy)</span>
+            <span class="badge badge-blue">1 × System Design</span>
+            <span class="badge badge-green">1 × Domain/Architecture Deep-Dive</span>
+            <span class="badge badge-gold">1 × Culture Fit / Behavioral</span>
+          </td>
+          <td>Strong focus on concurrency, memory management, GPU compute, CUDA. Bengaluru interviews reported via MS Teams. LeetCode-style + low-level systems questions. Spin locks, semaphores, ARM architecture fair game.</td>
+        </tr>
+        <tr>
+          <td><strong>Salesforce</strong></td>
+          <td>LMTS (Staff equivalent)</td>
+          <td>4–5 rounds</td>
+          <td>
+            <span class="badge badge-red">2 × Coding (~2 hrs total)</span>
+            <span class="badge badge-blue">1 × System Design (SaaS-focused)</span>
+            <span class="badge badge-green">1 × Behavioral (Ohana values)</span>
+          </td>
+          <td>Emphasizes Ohana (family), Trust, and Customer Success values. Multi-tenant SaaS architecture and rate limiting are common design topics. Full-stack roles include front-end coding questions — flag specialization to recruiter early. Uses Quip for coding.</td>
+        </tr>
+        <tr>
+          <td><strong>PayPal</strong></td>
+          <td>Staff SWE</td>
+          <td>4–5 rounds</td>
+          <td>
+            <span class="badge badge-red">2 × Coding</span>
+            <span class="badge badge-blue">1 × System Design (Fintech)</span>
+            <span class="badge badge-green">1 × Behavioral</span>
+            <span class="badge badge-gold">1 × Hiring Manager</span>
+          </td>
+          <td>Fintech domain knowledge is a differentiator: payment processing, fraud detection, ledger systems. Behavioral questions aligned with PayPal's innovation-focused culture. Interview timeline ~3–4 weeks.</td>
+        </tr>
+        <tr>
+          <td><strong>Adobe</strong></td>
+          <td>Staff SWE</td>
+          <td>4–5 rounds</td>
+          <td>
+            <span class="badge badge-red">2 × Coding (Java/Python/JS)</span>
+            <span class="badge badge-blue">1 × System Design</span>
+            <span class="badge badge-green">1 × Behavioral</span>
+            <span class="badge badge-gold">1 × Hiring Manager</span>
+          </td>
+          <td>Domain-specific follow-ups around Creative Cloud / Experience Cloud. Expect questions on large dataset handling, adaptive algorithms, modular design. Strong emphasis on mentorship, innovation, and inclusion in behavioral round.</td>
+        </tr>
+        <tr>
+          <td><strong>Uber / Airbnb</strong></td>
+          <td>Staff Engineer</td>
+          <td>4–5 rounds</td>
+          <td>
+            <span class="badge badge-red">1–2 × Coding</span>
+            <span class="badge badge-blue">2 × System Design</span>
+            <span class="badge badge-green">1 × Behavioral / Cross-functional</span>
+          </td>
+          <td>Uber emphasizes real-time systems, geospatial problems, and distributed data. Airbnb emphasizes marketplace design, trust &amp; safety systems. Both have a cross-functional architectural interview. Introduction of "technical bar" checks for Staff-level scope.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 3: COMPETENCY WEIGHTS
+════════════════════════════════════════════════════ -->
+<section class="section" id="competency-weights">
+  <div class="section-label">Section 03</div>
+  <div class="section-title">Competency Weights by Company</div>
+  <p>Approximate importance of each competency toward the final hire/no-hire decision for Staff-level roles, based on community reports and recruiter signals. At L6+, the balance dramatically shifts from coding toward design and leadership.</p>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.2rem;">
+      <h4 style="font-family: 'Bebas Neue'; font-size: 1.1rem; letter-spacing: 0.05em; margin-bottom: 0.8rem;">Google L6</h4>
+      <div class="weight-row"><span class="weight-label">DS/Algo Coding</span><div class="weight-bar-track"><div class="weight-bar-fill" style="width: 25%"></div></div><span class="weight-pct">25%</span></div>
+      <div class="weight-row"><span class="weight-label">System Design</span><div class="weight-bar-track"><div class="weight-bar-fill blue" style="width: 40%"></div></div><span class="weight-pct">40%</span></div>
+      <div class="weight-row"><span class="weight-label">Leadership / RRK</span><div class="weight-bar-track"><div class="weight-bar-fill green" style="width: 35%"></div></div><span class="weight-pct">35%</span></div>
+    </div>
+
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.2rem;">
+      <h4 style="font-family: 'Bebas Neue'; font-size: 1.1rem; letter-spacing: 0.05em; margin-bottom: 0.8rem;">Meta E6</h4>
+      <div class="weight-row"><span class="weight-label">DS/Algo Coding</span><div class="weight-bar-track"><div class="weight-bar-fill" style="width: 25%"></div></div><span class="weight-pct">25%</span></div>
+      <div class="weight-row"><span class="weight-label">System Design</span><div class="weight-bar-track"><div class="weight-bar-fill blue" style="width: 45%"></div></div><span class="weight-pct">45%</span></div>
+      <div class="weight-row"><span class="weight-label">Behavioral</span><div class="weight-bar-track"><div class="weight-bar-fill green" style="width: 30%"></div></div><span class="weight-pct">30%</span></div>
+    </div>
+
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.2rem;">
+      <h4 style="font-family: 'Bebas Neue'; font-size: 1.1rem; letter-spacing: 0.05em; margin-bottom: 0.8rem;">Amazon L7 Principal</h4>
+      <div class="weight-row"><span class="weight-label">DS/Algo Coding</span><div class="weight-bar-track"><div class="weight-bar-fill" style="width: 15%"></div></div><span class="weight-pct">15%</span></div>
+      <div class="weight-row"><span class="weight-label">System Design</span><div class="weight-bar-track"><div class="weight-bar-fill blue" style="width: 25%"></div></div><span class="weight-pct">25%</span></div>
+      <div class="weight-row"><span class="weight-label">LP Behavioral</span><div class="weight-bar-track"><div class="weight-bar-fill green" style="width: 60%"></div></div><span class="weight-pct">60%</span></div>
+    </div>
+
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.2rem;">
+      <h4 style="font-family: 'Bebas Neue'; font-size: 1.1rem; letter-spacing: 0.05em; margin-bottom: 0.8rem;">Microsoft L65 Principal</h4>
+      <div class="weight-row"><span class="weight-label">DS/Algo Coding</span><div class="weight-bar-track"><div class="weight-bar-fill" style="width: 30%"></div></div><span class="weight-pct">30%</span></div>
+      <div class="weight-row"><span class="weight-label">System Design</span><div class="weight-bar-track"><div class="weight-bar-fill blue" style="width: 35%"></div></div><span class="weight-pct">35%</span></div>
+      <div class="weight-row"><span class="weight-label">Technical Strategy</span><div class="weight-bar-track"><div class="weight-bar-fill green" style="width: 35%"></div></div><span class="weight-pct">35%</span></div>
+    </div>
+
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.2rem;">
+      <h4 style="font-family: 'Bebas Neue'; font-size: 1.1rem; letter-spacing: 0.05em; margin-bottom: 0.8rem;">Salesforce LMTS</h4>
+      <div class="weight-row"><span class="weight-label">DS/Algo Coding</span><div class="weight-bar-track"><div class="weight-bar-fill" style="width: 30%"></div></div><span class="weight-pct">30%</span></div>
+      <div class="weight-row"><span class="weight-label">System Design</span><div class="weight-bar-track"><div class="weight-bar-fill blue" style="width: 40%"></div></div><span class="weight-pct">40%</span></div>
+      <div class="weight-row"><span class="weight-label">Values / Ohana</span><div class="weight-bar-track"><div class="weight-bar-fill green" style="width: 30%"></div></div><span class="weight-pct">30%</span></div>
+    </div>
+
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.2rem;">
+      <h4 style="font-family: 'Bebas Neue'; font-size: 1.1rem; letter-spacing: 0.05em; margin-bottom: 0.8rem;">Nvidia / Apple (Systems)</h4>
+      <div class="weight-row"><span class="weight-label">DS/Algo + Systems</span><div class="weight-bar-track"><div class="weight-bar-fill" style="width: 45%"></div></div><span class="weight-pct">45%</span></div>
+      <div class="weight-row"><span class="weight-label">System Design</span><div class="weight-bar-track"><div class="weight-bar-fill blue" style="width: 30%"></div></div><span class="weight-pct">30%</span></div>
+      <div class="weight-row"><span class="weight-label">Behavioral / Domain Fit</span><div class="weight-bar-track"><div class="weight-bar-fill green" style="width: 25%"></div></div><span class="weight-pct">25%</span></div>
+    </div>
+
+  </div>
+
+  <div class="callout" style="margin-top: 2rem;">
+    <div class="callout-title">⚠ Key Insight: The Leveling Trap</div>
+    <p>At L6+, rejection patterns shift dramatically. Candidates are rarely rejected for coding failures alone. The most common rejection signal for Staff-level candidates is <strong>insufficient system design depth</strong> or <strong>lack of demonstrated org-level leadership signal</strong>. Many strong seniors are downleveled to L5/E5 because their design answers remain "team-scoped" instead of "org-scoped." Tailor all system design and behavioral answers to show cross-team, multi-quarter impact.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 4: BENGALURU / INDIA HUB NOTES
+════════════════════════════════════════════════════ -->
+<section class="section" id="bengaluru">
+  <div class="section-label">Section 04</div>
+  <div class="section-title">Bengaluru & India Hub Notes</div>
+  <p>Interview loops from India hubs are structurally identical to global loops. However, candidates in Bengaluru, Hyderabad, and Pune report a few India-specific patterns worth noting.</p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.1rem; border-left: 4px solid var(--accent);">
+      <h4 style="font-weight: 600; margin-bottom: 0.4rem;">Google Bengaluru</h4>
+      <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5;">Interview fully virtual (post-2024). Googleyness round may include domain-specific "Application Engineer" questions (Application Design, System Integration rounds reported in 2025). DSA questions include graph/matrix problems — e.g., <em>largest right-angled triangle of 1s in a matrix</em>. Timeline: ~4–6 weeks. Competitive programming background valued.</p>
+    </div>
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.1rem; border-left: 4px solid var(--accent2);">
+      <h4 style="font-weight: 600; margin-bottom: 0.4rem;">Amazon Bengaluru / Hyderabad</h4>
+      <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5;">Loop is standard global format. Bar Raiser from any Amazon team globally. Timeline ~6–8 weeks. Candidates report LP stories from India context are well-received — don't feel pressure to use US-centric examples. Strong focus on scale and distributed systems in design rounds.</p>
+    </div>
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.1rem; border-left: 4px solid var(--accent3);">
+      <h4 style="font-weight: 600; margin-bottom: 0.4rem;">Microsoft Hyderabad</h4>
+      <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5;">One of largest campuses outside Redmond. L63/L65 loops happen fully on-site in Hyderabad or virtually. MS uses online coding assessments pre-loop. Growth Mindset culture questions are well-documented — prepare "learning from failure" stories. Strategy round at L65 is seldom documented publicly; focus on influencing without authority stories.</p>
+    </div>
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.1rem; border-left: 4px solid var(--gold);">
+      <h4 style="font-weight: 600; margin-bottom: 0.4rem;">Nvidia Bengaluru</h4>
+      <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5;">Interviews via MS Teams. First round covers memory management (spin locks, mutex, semaphores), I2C, ARM architecture, memory protection units. Followed by C/C++ coding. For non-hardware SWE roles: LeetCode-style + system design around GPU inference pipelines and model serving. 4–5 rounds total.</p>
+    </div>
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.1rem; border-left: 4px solid var(--accent);">
+      <h4 style="font-weight: 600; margin-bottom: 0.4rem;">Salesforce Hyderabad / Bengaluru</h4>
+      <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5;">Multi-cloud org structure means loops vary by team. Ohana culture is genuine — be prepared to discuss teamwork and customer trust authentically. Multi-tenancy and SaaS architecture questions are India-relevant given the strong CRM engineering teams here. Uses Quip for coding exercises.</p>
+    </div>
+    <div style="background: var(--card-bg); border: 1px solid var(--rule); padding: 1.1rem; border-left: 4px solid var(--accent2);">
+      <h4 style="font-weight: 600; margin-bottom: 0.4rem;">PayPal / Adobe Bengaluru</h4>
+      <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5;">PayPal Bengaluru is a core engineering hub; fintech system design (payment ledgers, fraud, settlement) is common. Adobe Noida + Bengaluru teams — domain knowledge of Experience Platform and Creative Suite is valued. Both run interviews on 3–5 week timelines.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 5: DS/ALGO QUESTIONS
+════════════════════════════════════════════════════ -->
+<section class="section" id="dsalgo">
+  <div class="section-label">Section 05</div>
+  <div class="section-title">DS &amp; Algo Question Bank</div>
+  <p>Compiled from Glassdoor, Blind, LeetCode Interview Experiences, and candidate reports (2024–2026). For Staff-level, interviewers assess <em>which data structure you chose and why</em>, not just whether your code compiles. Expect follow-up trade-off discussions after every question.</p>
+
+  <div class="callout blue" style="margin: 1.5rem 0;">
+    <div class="callout-title">Staff-Level Coding Philosophy</div>
+    <p>The real test is not whether you use a heap — it's whether you can say <em>"I used a heap because I need predictable O(log N) insertions under memory pressure and the dataset is too large for a sorted array refresh."</em> Interviewers at L6+ probe <strong>why</strong> your solution is correct, then ask you to break it, optimize it, and explain how it behaves under streaming/distributed constraints.</p>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Arrays, Strings &amp; Sliding Window</h3>
+      <span class="q-count">Frequently tested @ Google, Meta, Amazon</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Minimum Window Substring (LC #76) — Extended: stream of characters arriving; maintain a minimum window in real time with O(1) updates per character.</div>
+        <div class="q-meta">Google, Meta · Follow-up: distributed version across shards</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Sliding Window Maximum (LC #239) — Follow-up: what if the window size is variable and determined by a function of previous elements?</div>
+        <div class="q-meta">Amazon, Google · Deque-based; probe memory vs time trade-off</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Medium–Hard</span>
+        <div class="q-text">Merge Intervals (LC #56) + Streaming variant — intervals arrive in a stream; maintain non-overlapping set at all times. Discuss TreeMap vs sorted list.</div>
+        <div class="q-meta">Google · Follow-up: LC #732 My Calendar III</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Trapping Rain Water (LC #42) — Follow-up: 3D matrix version (LC #407). Discuss two-pointer vs stack trade-offs.</div>
+        <div class="q-meta">Google, Meta, Amazon · Common opener for deeper graph/DP</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Medium</span>
+        <div class="q-text">Product of Array Except Self (LC #238) — without division, in O(n). Extended: sparse array with zeros, streaming constraints.</div>
+        <div class="q-meta">Amazon, Meta · Probe prefix/suffix optimization</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Largest Right-Angled Triangle of 1s in a matrix (reported Bengaluru Google 2025) — matrix of 0/1; find largest right-triangle with all 1s, equal and unequal sides variants.</div>
+        <div class="q-meta">Google Bengaluru · Novel matrix traversal problem</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Trees, Graphs &amp; Advanced Traversal</h3>
+      <span class="q-count">High signal at all Tier 1 companies</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Word Ladder II (LC #126) — Find all shortest transformation sequences. Follow-up: what if dictionary is stored in a distributed key-value store?</div>
+        <div class="q-meta">Google · BFS with path reconstruction; stack overflow discussion</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Clone Graph (LC #133) — deep copy of undirected graph. Extended: graph too large for memory; discuss BFS with stack vs DFS recursion, sharding strategy.</div>
+        <div class="q-meta">Meta · Stack overflow risk follow-up mandatory</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Critical Connections in a Network (LC #1192) — Tarjan's bridge-finding algorithm. Extended: dynamic edge insertions and deletions.</div>
+        <div class="q-meta">Google L6 · Advanced graph theory; Tarjan's is Staff-level signal</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Reconstruct Itinerary (LC #332) — Euler path in a directed graph (Hierholzer's algorithm). Extended: flights arriving as a stream; maintain valid itinerary incrementally.</div>
+        <div class="q-meta">Nvidia Bengaluru (itinerary variant reported 2024)</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Number of Islands II (LC #305) — Union Find with streaming add operations. Discuss path compression and union by rank; compare to BFS solution.</div>
+        <div class="q-meta">Amazon, Google · Union-Find mastery expected at L6</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Alien Dictionary (LC #269) — topological sort from word order. Extended: detect contradictions in a large schema definition file.</div>
+        <div class="q-meta">Meta, Google · Topological sort real-world framing</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Dynamic Programming &amp; Optimization</h3>
+      <span class="q-count">Heavy weight at Google; moderate at Meta/Amazon</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Word Break II (LC #140) — all possible sentence constructions. Follow-up: dictionary served by a remote microservice; caching strategy for prefix lookups. Trie vs HashMap trade-off.</div>
+        <div class="q-meta">Google · Trie + memoization discussion mandatory</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Regular Expression Matching (LC #10) — DP with '.' and '*'. Extended: pattern is a stream; incremental matching with bounded memory.</div>
+        <div class="q-meta">Google · Classic hard DP; state machine variant</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Burst Balloons (LC #312) — interval DP. Extended: maximize value of operations on a circular array with dependency constraints.</div>
+        <div class="q-meta">Google, Meta · Interval DP is Staff-level differentiator</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Minimum Moves to Reach Target Score (LC #2139) — greedy insight required; DP fails at scale (n up to 10⁹). Interviewers intentionally give large constraints to eliminate DP.</div>
+        <div class="q-meta">Amazon · Greedy insight over DP; constraint discussion critical</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Edit Distance (LC #72) — DP classic. Extended: large strings stored in distributed object storage; chunked DP or approximate edit distance (SimHash).</div>
+        <div class="q-meta">Amazon OA frequent · Distributed variant is Staff signal</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Longest Increasing Subsequence (LC #300) — O(n log n) with patience sorting / binary search. Extended: online LIS in a stream with bounded memory.</div>
+        <div class="q-meta">Google, Meta · Patience sorting knowledge separates Staff candidates</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Heaps, Priority Queues &amp; Data Structure Design</h3>
+      <span class="q-count">High frequency across all Tier 1 companies</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Merge K Sorted Lists (LC #23) — heap-based. Extended: k lists arrive as async streams; back-pressure and bounded buffer discussion.</div>
+        <div class="q-meta">Meta · Heap size vs latency trade-off key discussion</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Find Median from Data Stream (LC #295) — two-heap approach. Extended: 99th percentile from a data stream with bounded memory (t-digest, reservoir sampling).</div>
+        <div class="q-meta">Google, Amazon · Approximate algorithms signal for Staff</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">LRU Cache (LC #146) → LFU Cache (LC #460) — O(1) all operations. Extended: distributed LRU across 100 nodes with eventual consistency guarantee.</div>
+        <div class="q-meta">Meta, Google · LFU is the Staff-level follow-up to LRU</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Medium-Hard</span>
+        <div class="q-text">Insert Delete GetRandom O(1) (LC #380) — reported directly in Meta E6 interview (2025). Extended: allow duplicate values (LC #381).</div>
+        <div class="q-meta">Meta E6 direct report · HashMap + ArrayList hybrid</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Design Search Autocomplete System (LC #642) — Trie vs sorted ArrayList with binary search. Maintain top-3 at each Trie node. Extended: distributed Trie with billions of queries/sec.</div>
+        <div class="q-meta">Google · Trie mastery; distributed Trie is Staff differentiator</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Serialize/Deserialize Binary Tree (LC #297) → N-ary tree → Graph with cycles. Extended: serialize a distributed computation DAG with partial failures.</div>
+        <div class="q-meta">Amazon, Google · Systematic probe from simple to complex</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Concurrency &amp; Systems Programming (Nvidia / Apple)</h3>
+      <span class="q-count">Domain-specific for systems-heavy roles</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Design a thread-safe rate limiter using token bucket algorithm. Extended: distributed rate limiter across 50 nodes with Redis as the coordination layer.</div>
+        <div class="q-meta">Nvidia, Apple, Salesforce · Mutex + condition variable design</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Implement a reader-writer lock from scratch (no library). Extend to allow writer starvation prevention and bounded waiting.</div>
+        <div class="q-meta">Nvidia Bengaluru · Spin locks, semaphores, mutex trade-offs</div>
+      </div>
+      <div class="q-card">
+        <span class="q-level lvl-hard">Hard</span>
+        <div class="q-text">Design a function signature for resource allocation that allows callers to access allocated resources (pointer ownership semantics, RAII). Reported in Nvidia 2024 loop.</div>
+        <div class="q-meta">Nvidia direct report · C++ ownership, memory safety</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top: 2rem;">
+    <div class="callout-title">Top LeetCode Tags for Staff-Level Prep</div>
+    <p>Focus your LeetCode practice on: <strong>Hard Graph</strong> (Tarjan's, Dijkstra+constraints, bipartite), <strong>Hard DP</strong> (interval DP, bitmask DP, DP on trees), <strong>Heap/Priority Queue Design</strong>, <strong>Trie variants</strong>, <strong>Union-Find with path compression</strong>, and <strong>Monotonic Stack/Queue</strong>. Blind 75 and NeetCode 150 are the floor — Staff prep requires going deeper on the Hard category.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 6: SYSTEM DESIGN / HLD
+════════════════════════════════════════════════════ -->
+<section class="section" id="systemdesign">
+  <div class="section-label">Section 06</div>
+  <div class="section-title">System Design &amp; HLD Questions</div>
+  <p>At Staff level, system design is the primary signal. The expectation shifts from "can you design a working system?" to "can you identify hidden trade-offs, reason about failure modes, and make defensible architectural decisions at massive scale?"</p>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Distributed Infrastructure &amp; Storage</h3>
+      <span class="q-count">Core competency for all Staff levels</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card design">
+        <span class="q-level lvl-design">Distributed Systems</span>
+        <div class="q-text">Design a globally distributed key-value store (like DynamoDB/Cassandra). Focus: consistent hashing, replication factor, quorum reads/writes, conflict resolution (vector clocks vs last-write-wins), eventual vs strong consistency trade-offs.</div>
+        <div class="q-meta">Google, Amazon, Meta · CAP theorem discussion mandatory</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Distributed Systems</span>
+        <div class="q-text">Design a distributed cache (like Redis/Memcached). Topics: cache eviction policies (LRU/LFU), consistent hashing for node routing, thundering herd problem, cache aside vs write-through vs write-behind, TTL management at scale.</div>
+        <div class="q-meta">Google, Uber, Salesforce · Write-through vs write-behind is Staff-signal trade-off</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Distributed Systems</span>
+        <div class="q-text">Design a distributed message queue (like Kafka). Topics: partition strategy, consumer groups, exactly-once delivery semantics, log compaction, replication lag, dead letter queues, back-pressure mechanisms.</div>
+        <div class="q-meta">Amazon, Uber, PayPal · Event-driven architecture depth expected</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Distributed Systems</span>
+        <div class="q-text">Design a distributed job scheduler (like AWS Batch/Kubernetes Jobs). Topics: leader election, idempotency of job execution, at-least-once vs exactly-once, priority queues, distributed locking (Chubby/ZooKeeper), failure recovery.</div>
+        <div class="q-meta">Amazon, Google · Leader election + idempotency are Staff differentiators</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Storage</span>
+        <div class="q-text">Design a large-scale object storage system (like S3). Topics: erasure coding vs replication, metadata service design, multipart upload, consistency models, cross-region replication, cost optimization tiers.</div>
+        <div class="q-meta">Amazon/AWS · Expected depth for infra-track Staff roles</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Distributed Systems</span>
+        <div class="q-text">Design a distributed locking service (like Google Chubby). Topics: Paxos/Raft consensus, lease-based locking, lock timeout detection, client failure handling, performance under high contention.</div>
+        <div class="q-meta">Google L6/L7 · Consensus algorithms signal strong at this level</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Multi-Tenancy &amp; SaaS Platforms</h3>
+      <span class="q-count">Critical for Salesforce, Intuit, Adobe, PayPal</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card design">
+        <span class="q-level lvl-design">Multi-Tenancy</span>
+        <div class="q-text">Design a multi-tenant SaaS document storage system (like Salesforce CRM / QuickBooks). Topics: tenant data isolation strategies (shared DB, schema-per-tenant, DB-per-tenant), sharding by tenant ID, cross-tenant query prevention, permissioning, offline sync, conflict resolution.</div>
+        <div class="q-meta">Salesforce, Intuit · Isolation + sharding are the primary signal here</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Multi-Tenancy</span>
+        <div class="q-text">Design a multi-tenant rate limiter. Topics: fair share queuing per tenant, burst allowances, Redis-based sliding window vs token bucket, preventing noisy-neighbor problems, real-time throttling signals.</div>
+        <div class="q-meta">Salesforce, Uber, PayPal · Governor limits context at Salesforce</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Fintech</span>
+        <div class="q-text">Design a payment processing system (like PayPal / Stripe). Topics: idempotency keys, distributed transaction management (saga vs 2PC), reconciliation pipeline, fraud detection hooks, ledger design (event sourcing), PCI compliance considerations.</div>
+        <div class="q-meta">PayPal, Amazon · Saga pattern vs 2PC trade-off is the key signal</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Fintech</span>
+        <div class="q-text">Design a fraud detection system at scale. Topics: real-time scoring pipeline (Kafka → feature store → ML model), feature engineering latency, rule engine vs ML trade-off, false positive cost management, model retraining pipeline.</div>
+        <div class="q-meta">PayPal, Amazon · ML system design layer expected at Staff level</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>High-Traffic Platforms &amp; Scalability</h3>
+      <span class="q-count">Standard across all companies; depth separates levels</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card design">
+        <span class="q-level lvl-design">Scalability</span>
+        <div class="q-text">Design a real-time collaborative editing backend (like Google Docs). Topics: Operational Transformation vs CRDT for conflict resolution, offline edit buffering, delta sync protocol, WebSocket fan-out at scale, presence indicators, snapshot + delta storage model.</div>
+        <div class="q-meta">Google L6 — directly reported · OT vs CRDT is the Staff signal</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Scalability</span>
+        <div class="q-text">Design a URL shortener at massive scale (10 billion links). Extended: analytics pipeline for click tracking, hot link handling, geo-aware routing, abuse prevention, custom aliases, expiry management.</div>
+        <div class="q-meta">Universal · Base62 encoding + consistent hashing + write sharding</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Scalability</span>
+        <div class="q-text">Design a social media feed (like Twitter/X or Instagram). Topics: fan-out on write vs fan-out on read, celebrity problem, ranked feed via ML, GraphQL vs REST, CDN for media, hot partition handling, newsfeed ordering across data centers.</div>
+        <div class="q-meta">Meta, Twitter/X · Fan-out strategy choice is the main Staff signal</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Scalability</span>
+        <div class="q-text">Design a ride-sharing service (like Uber). Topics: real-time geospatial indexing (geohash vs S2), driver-rider matching algorithm, surge pricing engine, ETA prediction at scale, trip state machine, offline-first mobile clients, streaming event pipeline.</div>
+        <div class="q-meta">Uber, Amazon · Geospatial design is domain-specific depth</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Scalability</span>
+        <div class="q-text">Design a video streaming service (like YouTube / Netflix). Topics: adaptive bitrate (ABR) streaming, CDN edge caching strategy, chunked upload pipeline, transcoding farm orchestration, content recommendation pipeline, live streaming vs VOD architecture differences.</div>
+        <div class="q-meta">Google/YouTube, Netflix, Amazon · Scale of CDN layer is the key depth probe</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Scalability</span>
+        <div class="q-text">Design a web crawler for the entire internet. Topics: URL frontier management (priority queue + deduplication), DNS resolution caching, robots.txt compliance at scale, distributed Bloom filters, politeness delays, incremental recrawl scheduling, graph-aware crawl ordering (PageRank hints).</div>
+        <div class="q-meta">Google · Bloom filter + distributed queue design expected at L6</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">AI Infrastructure</span>
+        <div class="q-text">Design an AI model serving infrastructure (like Nvidia Triton / TorchServe). Topics: batching strategies (static vs dynamic batching), model versioning, A/B testing for models, GPU memory management, inference latency SLAs, autoscaling by request queue depth.</div>
+        <div class="q-meta">Nvidia, Google, Meta · Rising frequency in 2025–2026 interviews</div>
+      </div>
+      <div class="q-card design">
+        <span class="q-level lvl-design">Scalability</span>
+        <div class="q-text">Design a real-time analytics platform (like Google Analytics or Amplitude). Topics: Lambda vs Kappa architecture, hot/cold data path separation, approximate counting (HyperLogLog, Count-Min Sketch), time-series database selection, dashboard query optimization.</div>
+        <div class="q-meta">Google, Amazon, Adobe · Approximate algorithms are Staff signals</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout green" style="margin-top: 1.5rem;">
+    <div class="callout-title">Staff-Level System Design Framework (RESHADED)</div>
+    <p><strong>R</strong>equirements (functional + non-functional) → <strong>E</strong>stimations (QPS, storage, bandwidth) → <strong>S</strong>torage schema → <strong>H</strong>igh-level design → <strong>A</strong>PIs → <strong>D</strong>etailed design → <strong>E</strong>valuate trade-offs → <strong>D</strong>istinguish your design. At Staff level, spend extra time on the Evaluate and Distinguish steps — these are where the leveling signal lives. Always probe your own design: "Where does this break? What's the cost? What would I change in 2 years?"</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 7: LEADERSHIP & BEHAVIORAL
+════════════════════════════════════════════════════ -->
+<section class="section" id="leadership">
+  <div class="section-label">Section 07</div>
+  <div class="section-title">Leadership &amp; Behavioral Questions</div>
+  <p>At Staff level, behavioral questions assess <em>organizational leadership without formal authority</em>. The scope of your stories must be cross-team, multi-quarter, and measurable. Stories scoped to a single team are a downleveling signal.</p>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Amazon Leadership Principles (L6/L7 Framing)</h3>
+      <span class="q-count">Critical — 3–5 LP-themed rounds at Amazon</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Earn Trust</span>
+        <div class="q-text">Tell me about a time you had to influence a decision across teams where you had no authority. How did you build credibility and get alignment? (L7: this should span organization boundaries, not just teams.)</div>
+        <div class="q-meta">Amazon L7 top LP · Cross-org influence is the Staff signal</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Ownership</span>
+        <div class="q-text">Describe a situation where you took ownership of a critical problem that wasn't technically yours to solve. What were the risks, and how did you ensure success without being the bottleneck?</div>
+        <div class="q-meta">Amazon · Avoid stories where you just "helped" — you must own the outcome</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Invent &amp; Simplify</span>
+        <div class="q-text">Tell me about a time you simplified a complex system or process that others thought was necessary. What was the outcome, and what did you have to unlearn?</div>
+        <div class="q-meta">Amazon · Simplification stories resonate more than complexity-adding ones</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Dive Deep</span>
+        <div class="q-text">Tell me about a time when a metric surprised you and you had to go deep to understand the root cause. How deep did you go, and what did you find?</div>
+        <div class="q-meta">Amazon · Details, numbers, and root cause depth are required</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Disagree &amp; Commit</span>
+        <div class="q-text">Describe a time when you strongly disagreed with your manager or leadership on a technical direction. How did you voice your concerns, and what did you do once the decision was made?</div>
+        <div class="q-meta">Amazon, Google · Common failure: candidates only disagree down, not up</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Deliver Results</span>
+        <div class="q-text">Tell me about the most complex project you've delivered. How did you manage dependencies across teams, handle mid-course changes, and ultimately ensure delivery? What were the measurable outcomes?</div>
+        <div class="q-meta">Amazon · Dollar/percentage impact required; vague outcomes signal downlevel</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Bias for Action</span>
+        <div class="q-text">Describe a time you had to make a significant technical decision with incomplete information. What was your decision framework, and what were the consequences?</div>
+        <div class="q-meta">Amazon · Speed + reversibility of decision is the key dimension</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Think Big</span>
+        <div class="q-text">Tell me about a time your vision for a system or architecture was significantly larger in scope than what your team was initially planning. How did you get buy-in for the larger vision?</div>
+        <div class="q-meta">Amazon L7 · Org-level vision is required at Principal level</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Google Googleyness &amp; Leadership (L6)</h3>
+      <span class="q-count">1–2 dedicated rounds + interspersed in design/coding</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Cross-Org Impact</span>
+        <div class="q-text">Tell me about a time you drove a technical decision that impacted multiple engineering organizations. How did you align competing priorities?</div>
+        <div class="q-meta">Google L6 · Must show org-level, not team-level, scope</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Technical Mentorship</span>
+        <div class="q-text">Describe how you've elevated the engineering capabilities of a team or organization. What's the most impactful thing you've done to grow others?</div>
+        <div class="q-meta">Google · Mentorship at scale differentiates L5 from L6</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Ambiguity</span>
+        <div class="q-text">Tell me about a time you had to define the technical strategy for a problem space that had no established playbook. How did you approach the ambiguity?</div>
+        <div class="q-meta">Google, Microsoft · Expected at L6+; L5 needs clarity to proceed</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Technical Judgment</span>
+        <div class="q-text">Tell me about a time when you had to make a technical trade-off that sacrificed short-term velocity for long-term maintainability. How did you justify it?</div>
+        <div class="q-meta">Google · Trade-off articulation is central to L6 evaluation</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Meta Behavioral (E6) — Cross-Functional Leadership</h3>
+      <span class="q-count">Mandatory pass; no mulligan for behavioral at Meta</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Influence</span>
+        <div class="q-text">Describe a situation where you influenced a major technical decision without direct authority. What was your approach, who pushed back, and how did you handle resistance?</div>
+        <div class="q-meta">Meta E6 top question · "Influence without authority" is a core E6 signal</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Conflict Resolution</span>
+        <div class="q-text">Tell me about a conflict with a senior colleague (same or higher level). How did you approach the disagreement, and what was the final resolution?</div>
+        <div class="q-meta">Meta E6 · Depth of conflict probing differentiates Staff from Senior</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Strategic Alignment</span>
+        <div class="q-text">How do you align technical decisions with broader business objectives? Give a specific example where you connected an engineering trade-off to a business outcome.</div>
+        <div class="q-meta">Meta, Microsoft, Salesforce · Business-technical bridge is Staff-level expectation</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">High Impact</span>
+        <div class="q-text">Explain a high-impact project you led and how you measured its success. What would you do differently? (Note: Meta probes the "differently" hard — interviewers want genuine reflection, not polished answers.)</div>
+        <div class="q-meta">Meta direct report · Genuine reflection over polished narratives</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-category">
+    <div class="q-category-header">
+      <h3>Salesforce Ohana Values &amp; Microsoft Growth Mindset</h3>
+      <span class="q-count">Culturally specific but widely applicable</span>
+    </div>
+    <div class="q-grid">
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Trust (Salesforce)</span>
+        <div class="q-text">Tell me about a time when customer trust was at stake due to a technical failure. What was your role, and how did you restore confidence?</div>
+        <div class="q-meta">Salesforce · Trust is Salesforce's #1 value; frame all stories through this lens</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Equality (Salesforce)</span>
+        <div class="q-text">Describe how you've created an inclusive technical environment where diverse perspectives improve engineering outcomes.</div>
+        <div class="q-meta">Salesforce · Ohana values require authentic, specific examples</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Create Clarity (Microsoft)</span>
+        <div class="q-text">Give an example of how you helped your team navigate ambiguity or rapidly changing requirements. How did you communicate a clear path forward when the situation was unclear?</div>
+        <div class="q-meta">Microsoft · One of three core leadership behaviors at Microsoft</div>
+      </div>
+      <div class="q-card leadership">
+        <span class="q-level lvl-behav">Generate Energy (Microsoft)</span>
+        <div class="q-text">Tell me about a time you re-energized a team that was struggling with morale or motivation during a challenging project.</div>
+        <div class="q-meta">Microsoft · Ties to Growth Mindset; show learning from setbacks</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top: 2rem;">
+    <div class="callout-title">The STAR+ Framework for Staff Level</div>
+    <p>Standard STAR (Situation, Task, Action, Result) is the <em>floor</em>, not the ceiling. Add two dimensions: <strong>Scale</strong> (how many teams, engineers, systems were affected?) and <strong>Scope</strong> (was this quarterly, annual, or multi-year impact?). The key downleveling signal is stories that begin "My team did X" instead of "I influenced Y across organizations by doing Z." Every number in your STAR story should be quantified: latency reduced by %, cost saved in $, engineers unblocked across N teams.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 8: PREPARATION PLAN
+════════════════════════════════════════════════════ -->
+<section class="section" id="prep-plan">
+  <div class="section-label">Section 08</div>
+  <div class="section-title">12-Week Preparation Plan</div>
+  <p>A structured timeline for candidates with existing senior-level experience. Adjust pacing based on how close you are to interview readiness on each dimension.</p>
+
+  <ul class="step-list">
+    <li>
+      <div class="step-text"><strong>Weeks 1–2: Baseline Assessment &amp; DS/Algo Foundation</strong><br>
+      Complete NeetCode 150 (skip Easy; focus on Medium/Hard). Time yourself strictly. Identify 3–5 pattern categories where you're weakest (typically: interval DP, graph algorithms, and advanced heap design). Start the Blind 75 review for quick confidence building. Daily: 3–4 LeetCode problems.</div>
+    </li>
+    <li>
+      <div class="step-text"><strong>Weeks 3–4: Advanced DS/Algo &amp; Trade-Off Practice</strong><br>
+      Shift to Hard problems exclusively: graph theory (Tarjan's, Dijkstra variants), interval DP, streaming algorithm patterns. For each problem, after solving, write down: (a) 3 follow-up constraints an interviewer could add, (b) how you'd adapt your solution. Practice saying your reasoning aloud — silence is a red flag at L6.</div>
+    </li>
+    <li>
+      <div class="step-text"><strong>Weeks 5–7: System Design Deep Dive</strong><br>
+      Read <em>Designing Data-Intensive Applications</em> (Kleppmann) chapters 5–9 (replication, partitioning, transactions, distributed systems). Read Alex Xu's <em>System Design Interview Vol. 1 &amp; 2</em>. Practice 2 full design problems per week (45 mins each, spoken aloud). Cover: distributed cache, message queue, payment system, collaborative editor, feed system, web crawler, multi-tenant SaaS. Use the RESHADED framework each time.</div>
+    </li>
+    <li>
+      <div class="step-text"><strong>Week 8: Leadership Story Bank Construction</strong><br>
+      Write out 8–10 career stories using STAR+. Each story should cover multiple LP/behavioral dimensions simultaneously. Tag each story with which principles it covers. Ensure at least 3 stories demonstrate cross-org influence. Ensure at least 2 stories involve technical disagreement resolved through influence. Quantify every outcome in $, %, latency ms, or team headcount.</div>
+    </li>
+    <li>
+      <div class="step-text"><strong>Weeks 9–10: Company-Specific Prep</strong><br>
+      For each target company: read their engineering blog (Google Research, Meta Engineering, Amazon Science, Netflix TechBlog). Study company-specific system design vocabulary. For Amazon: deep-dive all 16 Leadership Principles and write 2 stories per LP. For Salesforce: understand multi-tenant architecture and Ohana values. For Nvidia: refresh on GPU architecture, CUDA, and concurrent programming primitives.</div>
+    </li>
+    <li>
+      <div class="step-text"><strong>Weeks 11–12: Mock Interviews &amp; Refinement</strong><br>
+      Conduct 6–8 full mock interviews: 2–3 coding mocks via interviewing.io or Pramp, 2–3 system design mocks (ideally with Staff+ engineers), 1–2 behavioral mocks with a coach or peer. After each mock: write post-mortem — what signal did you give? Were your answers org-scoped? Did you drive the design or follow prompts? Time box each practice session strictly.</div>
+    </li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 9: RESOURCES
+════════════════════════════════════════════════════ -->
+<section class="section" id="resources">
+  <div class="section-label">Section 09</div>
+  <div class="section-title">Resources &amp; Communities</div>
+
+  <h3 style="font-family: 'Bebas Neue'; font-size: 1.3rem; letter-spacing: 0.06em; margin-bottom: 0.8rem; margin-top: 1rem;">📚 Books</h3>
+  <div class="resource-grid">
+    <div class="resource-card">
+      <div class="r-type">Book · Must-Read</div>
+      <h4>Designing Data-Intensive Applications</h4>
+      <p>Martin Kleppmann. The single most valuable book for Staff-level system design preparation. Chapters on replication, partitioning, and distributed transactions are essential reading.</p>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Book · Must-Read</div>
+      <h4>System Design Interview Vol. 1 &amp; 2</h4>
+      <p>Alex Xu. Highly practical, company-specific system design frameworks. Vol. 2 covers advanced topics like stock exchange, ad click aggregation, and Google Maps design.</p>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Book · Foundational</div>
+      <h4>Cracking the Coding Interview</h4>
+      <p>Gayle Laakmann McDowell. Good refresher for DS/Algo fundamentals. Supplement with LeetCode Hard for Staff-level preparation.</p>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Free eBook</div>
+      <h4>Designing Distributed Systems (Microsoft)</h4>
+      <p>Free eBook from Microsoft covering distributed system patterns. Excellent for conceptual grounding on patterns like scatter-gather, sidecar, and event-driven architectures.</p>
+      <a href="https://info.microsoft.com/rs/157-GQE-382/images/EN-CNTNT-eBook-DesigningDistributedSystems.pdf">Download Free (Microsoft)</a>
+    </div>
+  </div>
+
+  <h3 style="font-family: 'Bebas Neue'; font-size: 1.3rem; letter-spacing: 0.06em; margin-bottom: 0.8rem; margin-top: 2rem;">🌐 Online Platforms</h3>
+  <div class="resource-grid">
+    <div class="resource-card">
+      <div class="r-type">Mock Interviews</div>
+      <h4>interviewing.io</h4>
+      <p>Anonymous mock interviews with engineers from Google, Meta, Amazon. Highly recommended for Staff-level behavioral and system design practice. Peer-to-peer swaps available.</p>
+      <a href="https://interviewing.io">interviewing.io</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Question Bank + Guides</div>
+      <h4>HelloInterview.com</h4>
+      <p>Comprehensive level-specific interview guides for Google L6, Meta E6, Amazon L7. Includes process breakdowns, question banks, and insider tips from coaches.</p>
+      <a href="https://www.hellointerview.com/guides/google/l6">Google L6 Guide</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">System Design</div>
+      <h4>System Design Handbook</h4>
+      <p>systemdesignhandbook.com — covers distributed systems questions, trade-off frameworks, and the RESHADED methodology with real interview walkthroughs.</p>
+      <a href="https://www.systemdesignhandbook.com">systemdesignhandbook.com</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">System Design Course</div>
+      <h4>Grokking the System Design Interview (DesignGurus)</div>
+      <p>Widely used course with 100K+ users. Covers patterns and mock interviews for distributed systems, used by FAANG engineers globally.</p>
+      <a href="https://grokkingtechinterview.com">grokkingtechinterview.com</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Company-Specific Guides</div>
+      <h4>Onsites.fyi</h4>
+      <p>Recent interview reports from actual candidates (filtered by level and company). Google L6 and Meta E6 guides are particularly detailed and well-sourced.</p>
+      <a href="https://www.onsites.fyi/blog/article/google-L6-software-engineer-interview-questions">Google L6 2025 Guide</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Mock Interviews + Coaching</div>
+      <h4>Prepfully / Exponent</div>
+      <p>Coaching from current/former FAANG Staff engineers. Good for behavioral mock interviews at Staff level where free peer platforms are less effective.</p>
+      <a href="https://prepfully.com">prepfully.com</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Coding Practice</div>
+      <h4>LeetCode</h4>
+      <p>Primary DS/Algo practice platform. Filter by company tag and sort by frequency. For Staff: focus on the Hard section and Google/Meta/Amazon company tags.</p>
+      <a href="https://leetcode.com">leetcode.com</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Coding Practice</div>
+      <h4>NeetCode 150 / NeetCode.io</h4>
+      <p>Curated 150 problem list with video explanations grouped by pattern. Best structured curriculum for systematic DS/Algo preparation for FAANG interviews.</p>
+      <a href="https://neetcode.io">neetcode.io</a>
+    </div>
+  </div>
+
+  <h3 style="font-family: 'Bebas Neue'; font-size: 1.3rem; letter-spacing: 0.06em; margin-bottom: 0.8rem; margin-top: 2rem;">💬 Communities</h3>
+  <div class="resource-grid">
+    <div class="resource-card">
+      <div class="r-type">Anonymous Professional Network</div>
+      <h4>Blind (teamblind.com)</h4>
+      <p>Rich source of recent interview experiences from verified employees at FAANG. Search for "Staff engineer interview" or "L6 loop" for recent first-hand reports. Take individual posts with salt but patterns across many posts are reliable.</p>
+      <a href="https://www.teamblind.com">teamblind.com</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Interview Reports</div>
+      <h4>Glassdoor Interview Section</h4>
+      <p>Filter by company + "Staff Software Engineer" + location (Bengaluru/Hyderabad). Good for understanding specific round structures and reported questions in the India context.</p>
+      <a href="https://www.glassdoor.co.in/Interview/Google-Software-Engineer-Bangalore-Interview-Questions-EI_IE9079.0,6_KO7,24_IL.25,34_IM1091.htm">Google Bengaluru Interviews</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">Engineering Blogs</div>
+      <h4>Company Engineering Blogs</h4>
+      <p>Google Research Blog, Meta Engineering Blog, Amazon Science, Netflix TechBlog, Uber Engineering. Reading these before interviews demonstrates genuine interest and provides real-world design vocabulary.</p>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">YouTube Channels</div>
+      <h4>Gaurav Sen / TechDummies / NeetCode</h4>
+      <p>Gaurav Sen (ex-Google) for system design deep dives. NeetCode for DS/Algo video walkthroughs with explanation of optimal thinking process. TechDummies for distributed systems concepts.</p>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">GitHub Resource</div>
+      <h4>System Design Primer</h4>
+      <p>One of the most starred GitHub repositories. Excellent reference for distributed systems concepts, with links to real engineering blog posts and papers as evidence.</p>
+      <a href="https://github.com/donnemartin/system-design-primer">github.com/donnemartin/system-design-primer</a>
+    </div>
+    <div class="resource-card">
+      <div class="r-type">GitHub Resource</div>
+      <h4>MAANG DSA Prep 100 (VikashPR)</h4>
+      <p>Curated 100 DSA problems for MAANG interviews with pattern tagging from LeetCode Top, Blind 75, and NeetCode 150. Useful for identifying coverage gaps.</p>
+      <a href="https://github.com/VikashPR/MAANG-Interview-Prep-100-DSA">GitHub Repository</a>
+    </div>
+  </div>
+</section>
+
+</div><!-- /page-grid -->
+
+<!-- FOOTER -->
+<footer>
+  <strong>Staff Engineer Interview Mastery Guide</strong> &nbsp;·&nbsp; Synthesized from Glassdoor, Blind, interviewing.io, onsites.fyi, hellointerview.com, and 2024–2026 candidate reports &nbsp;·&nbsp; This report reflects public information and community intelligence as of April 2026 &nbsp;·&nbsp; Prepared for Intuit internal use
+</footer>
+
+</body>
+</html>
